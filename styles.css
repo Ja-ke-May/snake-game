@@ -1,0 +1,34 @@
+body {
+    position: absolute;
+    background-color: black;
+    width: 100vw;
+    height: 100vh;
+    margin: 0; /* Remove default margin */
+    overflow: hidden; /* Hide overflow to ensure nothing outside the viewport is visible */
+}
+
+.circleAnimation{
+    position: absolute;
+    min-width: 1.5vw;
+    max-width: 1.5vw;
+    min-height: 2vh;
+    max-height: 2vh;
+    border-radius: 50%;
+    background-image: 
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), transparent 40%),
+    radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.9), transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 60%);
+  }
+  .flashAnimation {
+    animation: flashEffect 2s linear infinite;
+    animation-fill-mode: forwards;
+}
+
+@keyframes flashEffect {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
