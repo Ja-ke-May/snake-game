@@ -36,13 +36,12 @@ document.addEventListener("DOMContentLoaded", function() {
         // Get the radius of the main circle
         const circleRadius = parseFloat(mainCircle.style.width) / 2;
     
-        // Check if the main circle hits the screen boundaries
-if (posX - circleRadius < 5 || posX + circleRadius > window.innerWidth - 5 || posY - circleRadius < 5 || posY + circleRadius > window.innerHeight - 5) {
-    // Reset the circle position and other necessary parameters
-    posX = window.innerWidth / 2;
-    posY = window.innerHeight / 2;
-    dx = 0;
-    dy = 0;
+        // If the main circle hits the screen boundaries, reset parameters
+        if (posX - circleRadius < 5 || posX + circleRadius > window.innerWidth - 5 || posY - circleRadius < 5 || posY + circleRadius > window.innerHeight - 5) {
+            posX = window.innerWidth / 2;
+            posY = window.innerHeight / 2;
+            dx = 0;
+            dy = 0;
             previousPoints = points;
             document.getElementById('previousPoints').innerText = previousPoints;
             points = 0;
@@ -65,7 +64,7 @@ if (posX - circleRadius < 5 || posX + circleRadius > window.innerWidth - 5 || po
         }
     
         requestAnimationFrame(updateCirclePosition);
-    }    
+    }     
 
     updateCirclePosition();
 
@@ -126,17 +125,24 @@ if (posX - circleRadius < 5 || posX + circleRadius > window.innerWidth - 5 || po
      createFlashingCircle();
 
      function createFlashingCircle() {
-         const flashingCircle = document.createElement("div");
-         flashingCircle.classList.add("circleAnimation", "flashAnimation");
- 
-         const randomX = Math.random() * window.innerWidth * 0.9;
-         const randomY = Math.random() * window.innerHeight * 0.9;
- 
-         flashingCircle.style.top = `${randomY}px`;
-         flashingCircle.style.left = `${randomX}px`;
- 
-         document.body.appendChild(flashingCircle);
-     }
+        const flashingCircle = document.createElement("div");
+        flashingCircle.classList.add("circleAnimation", "flashAnimation");
+        
+        const circleDiameter = 20; 
+const margin = 50; // You can adjust this margin as per your requirement
+
+const maxX = window.innerWidth - circleDiameter - margin; 
+const maxY = window.innerHeight - circleDiameter - margin;  
+
+const randomX = Math.max(margin, Math.min(maxX, Math.random() * maxX));  // Ensuring randomX stays within the bounds
+const randomY = Math.max(margin, Math.min(maxY, Math.random() * maxY));  // Ensuring randomY stays within the bounds
+
+        
+        flashingCircle.style.top = `${randomY}px`;
+        flashingCircle.style.left = `${randomX}px`;
+        
+        document.body.appendChild(flashingCircle);
+    }    
  
      // Function to check collision between main circle and flashing circles
 function checkCollisionWithFlashingCircles() {
