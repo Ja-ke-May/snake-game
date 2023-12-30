@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const segments = []; // Array to store circle segments
+    const segments = []; 
 
     // Create the main circle in the center of the page
     const mainCircle = document.createElement("div");
@@ -13,13 +13,11 @@ document.addEventListener("DOMContentLoaded", function() {
     let points = 0;
     let previousPoints = 0;
 
-    // Position variables
     let posX = window.innerWidth / 2;
     let posY = window.innerHeight / 2;
 
-    // Direction variables
-    let dx = 0;  // horizontal movement
-    let dy = 0;  // vertical movement
+    let dx = 0;  
+    let dy = 0;  
 
     // Function to create a new segment for the main circle
     function createSegment(x, y) {
@@ -35,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
         posX += dx;
         posY += dy;
     
-        // Get the radius of the main circle (assuming width and height are the same)
+        // Get the radius of the main circle
         const circleRadius = parseFloat(mainCircle.style.width) / 2;
     
         // Check if the main circle hits the screen boundaries
@@ -107,17 +105,17 @@ if (posX - circleRadius < 5 || posX + circleRadius > window.innerWidth - 5 || po
         const rect = document.body.getBoundingClientRect();
 
         if (touchX < rect.left + window.innerWidth * 0.2) {
-            dx = -10;
+            dx = -5;
             dy = 0;
         } else if (touchX > rect.left + window.innerWidth * 0.8) {
-            dx = 10;
+            dx = 5;
             dy = 0;
         } else if (touchY < rect.top + window.innerHeight * 0.2) {
             dx = 0;
-            dy = -10;
+            dy = -5;
         } else if (touchY > rect.top + window.innerHeight * 0.8) {
             dx = 0;
-            dy = 10;
+            dy = 5;
         } else {
             return; // Return if touched elsewhere
         }
