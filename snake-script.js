@@ -67,7 +67,6 @@ if (posX - circleRadius < 5 || posX + circleRadius > window.innerWidth - 5 || po
         requestAnimationFrame(updateCirclePosition);
     }    
 
-    // Start updating the circle position
     updateCirclePosition();
 
     // Function to move the circle based on arrow key presses
@@ -124,16 +123,14 @@ if (posX - circleRadius < 5 || posX + circleRadius > window.innerWidth - 5 || po
     // Add event listener for touch events on the sides and top/bottom of the screen
     document.body.addEventListener("touchstart", moveCircleOnTouch);
 
-     // Initial call to create a flashing circle
      createFlashingCircle();
 
-     // Function to create flashing circles at random positions
      function createFlashingCircle() {
          const flashingCircle = document.createElement("div");
          flashingCircle.classList.add("circleAnimation", "flashAnimation");
  
-         const randomX = Math.random() * window.innerWidth * 0.95;
-         const randomY = Math.random() * window.innerHeight * 0.95;
+         const randomX = Math.random() * window.innerWidth * 0.9;
+         const randomY = Math.random() * window.innerHeight * 0.9;
  
          flashingCircle.style.top = `${randomY}px`;
          flashingCircle.style.left = `${randomX}px`;
@@ -161,13 +158,10 @@ function checkCollisionWithFlashingCircles() {
             points++;
             document.getElementById('points').innerText = points;
             
-            // Remove the flashing circle
             flashingCircle.remove();
             
-            // Add a segment to the mainCircle's tail
             createSegment(mainCircleCenterX, mainCircleCenterY);
             
-            // Create a new flashing circle
             createFlashingCircle();
         }
     });
