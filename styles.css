@@ -3,23 +3,60 @@ body {
     background-color: black;
     width: 100vw;
     height: 100vh;
-    margin: 0; /* Remove default margin */
-    overflow: hidden; /* Hide overflow to ensure nothing outside the viewport is visible */
+    margin: 0; 
+    overflow: hidden; 
+    border: 5px solid rgb(255, 255, 255); 
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center; 
 }
 
-.circleAnimation{
+#points {
+    position: fixed; 
+    top: 20%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    scale: 3;
+    color: white; 
+    z-index: 10; 
+}
+
+#previousPoints {
+    position: fixed; 
+    top: 80%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 40%;
+    scale: 3;
+    color: white; 
+    z-index: 10; 
+}
+
+.mainCircleAnimation {
     position: absolute;
-    min-width: 1.5vw;
-    max-width: 1.5vw;
-    min-height: 2vh;
-    max-height: 2vh;
+    min-width: 5px;
+    min-height: 5px; 
+    border-radius: 50%;
+    background-color: black; /* Set the background color to black */
+    box-shadow: 
+        0 0 5px 2px #fff,  /* White glow effect */
+        0 0 10px 4px #fff, /* White glow effect */
+        0 0 20px 6px #fff; /* White glow effect */
+}
+
+
+.circleAnimation {
+    position: absolute;
+    width: 5px;
+    height: 5px; 
     border-radius: 50%;
     background-image: 
     radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), transparent 40%),
     radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.9), transparent 40%),
     radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 60%);
-  }
-  .flashAnimation {
+}
+
+.flashAnimation {
     animation: flashEffect 2s linear infinite;
     animation-fill-mode: forwards;
 }
