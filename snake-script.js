@@ -1,11 +1,13 @@
 document.addEventListener("DOMContentLoaded", function() {
+    const segments = []; // Array to store circle segments
+
     // Create the main circle in the center of the page
     const mainCircle = document.createElement("div");
     mainCircle.classList.add("mainCircleAnimation");
     mainCircle.style.top = "50%";
     mainCircle.style.left = "50%";
-    mainCircle.style.width = '5px';
-    mainCircle.style.height = '5px';
+    mainCircle.style.width = '10px';
+    mainCircle.style.height = '10px';
     document.body.appendChild(mainCircle);
 
     let points = 0;
@@ -19,42 +21,56 @@ document.addEventListener("DOMContentLoaded", function() {
     let dx = 0;  // horizontal movement
     let dy = 0;  // vertical movement
 
-    // Initialize a counter for flashing circles
-    let flashingCircleCount = 0;
-
-    // Function to calculate distance between two points
-    function calculateDistance(x1, y1, x2, y2) {
-        return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+    // Function to create a new segment for the main circle
+    function createSegment(x, y) {
+        const segment = document.createElement("div");
+        segment.classList.add("mainCircleSegment");
+        segment.style.top = `${y}px`;
+        segment.style.left = `${x}px`;
+        document.body.appendChild(segment);
+        segments.push(segment);
     }
 
-    // Function to check for collision and remove flashing circles
-    function checkCollisionAndRemove() {
-        const mainCircleX = posX;
-        const mainCircleY = posY;
-        const mainCircleRadius = 25;
+    function updateCirclePosition() {
+        posX += dx;
+        posY += dy;
     
-        const flashingCircles = document.querySelectorAll('.flashAnimation');
-        flashingCircles.forEach(flashingCircle => {
-            const flashingCircleX = parseFloat(flashingCircle.style.left) + flashingCircle.offsetWidth / 2;
-            const flashingCircleY = parseFloat(flashingCircle.style.top) + flashingCircle.offsetHeight / 2;
-            const flashingCircleRadius = 25;
+        // Get the radius of the main circle (assuming width and height are the same)
+        const circleRadius = parseFloat(mainCircle.style.width) / 2;
+    
+        // Check if the main circle hits the screen boundaries
+if (posX - circleRadius < 5 || posX + circleRadius > window.innerWidth - 5 || posY - circleRadius < 5 || posY + circleRadius > window.innerHeight - 5) {
+    // Reset the circle position and other necessary parameters
+    posX = window.innerWidth / 2;
+    posY = window.innerHeight / 2;
+    dx = 0;
+    dy = 0;
+            previousPoints = points;
+            document.getElementById('previousPoints').innerText = previousPoints;
+            points = 0;
+            document.getElementById('points').innerText = points;
+            segments.forEach(segment => segment.remove());
+            segments.length = 0;
+        }
+    
+        // Update the position of the main circle
+        mainCircle.style.top = `${posY}px`;
+        mainCircle.style.left = `${posX}px`;
+    
+        // Add a new segment to the mainCircle's tail
+        createSegment(posX, posY);
+    
+        // Remove the oldest segment if the mainCircle gets too long
+        if (segments.length > 5) {
+            const oldestSegment = segments.shift();
+            oldestSegment.remove();
+        }
+    
+        requestAnimationFrame(updateCirclePosition);
+    }    
 
-            const distance = calculateDistance(mainCircleX, mainCircleY, flashingCircleX, flashingCircleY);
-
-            if (distance < mainCircleRadius + flashingCircleRadius) {
-                flashingCircle.remove();
-                flashingCircleCount--;
-                points++;
-
-                // Update the points displayed on the screen
-                document.getElementById('points').innerText = points;
-
-                // Increase the width and height of mainCircle by 1 pixel
-                mainCircle.style.width = `${parseFloat(mainCircle.style.width) + 2}px`;
-                mainCircle.style.height = `${parseFloat(mainCircle.style.height) + 2}px`;
-            }
-        });
-    }
+    // Start updating the circle position
+    updateCirclePosition();
 
     // Function to move the circle based on arrow key presses
     function moveCircle(event) {
@@ -110,54 +126,62 @@ document.addEventListener("DOMContentLoaded", function() {
     // Add event listener for touch events on the sides and top/bottom of the screen
     document.body.addEventListener("touchstart", moveCircleOnTouch);
 
-    // Function to update the position of the main circle
-    function updateCirclePosition() {
-        posX += dx;
-        posY += dy;
+     // Initial call to create a flashing circle
+     createFlashingCircle();
 
-        // Check boundaries and reset position if the main circle hits the border
-        if (posX < 0 || posX > window.innerWidth || posY < 0 || posY > window.innerHeight) {
-            posX = window.innerWidth / 2;
-            posY = window.innerHeight / 2;
-            dx = 0;
-            dy = 0;
-            previousPoints = points;
-            document.getElementById('previousPoints').innerText = previousPoints;
-            points = 0;
+     // Function to create flashing circles at random positions
+     function createFlashingCircle() {
+         const flashingCircle = document.createElement("div");
+         flashingCircle.classList.add("circleAnimation", "flashAnimation");
+ 
+         const randomX = Math.random() * window.innerWidth * 0.95;
+         const randomY = Math.random() * window.innerHeight * 0.95;
+ 
+         flashingCircle.style.top = `${randomY}px`;
+         flashingCircle.style.left = `${randomX}px`;
+ 
+         document.body.appendChild(flashingCircle);
+     }
+ 
+     // Function to check collision between main circle and flashing circles
+function checkCollisionWithFlashingCircles() {
+    const mainCircleRect = mainCircle.getBoundingClientRect();
+    
+    document.querySelectorAll('.circleAnimation.flashAnimation').forEach(flashingCircle => {
+        const flashingCircleRect = flashingCircle.getBoundingClientRect();
+        
+        const mainCircleCenterX = mainCircleRect.left + mainCircleRect.width / 2;
+        const mainCircleCenterY = mainCircleRect.top + mainCircleRect.height / 2;
+        const flashingCircleCenterX = flashingCircleRect.left + flashingCircleRect.width / 2;
+        const flashingCircleCenterY = flashingCircleRect.top + flashingCircleRect.height / 2;
+        
+        const distance = Math.sqrt(Math.pow(flashingCircleCenterX - mainCircleCenterX, 2) + Math.pow(flashingCircleCenterY - mainCircleCenterY, 2));
+        
+        const collisionThreshold = mainCircleRect.width / 2 + flashingCircleRect.width / 2;
+        
+        if (distance < collisionThreshold) {
+            points++;
             document.getElementById('points').innerText = points;
-            mainCircle.style.width = '5px';
-            mainCircle.style.height = '5px';
+            
+            // Remove the flashing circle
+            flashingCircle.remove();
+            
+            // Add a segment to the mainCircle's tail
+            createSegment(mainCircleCenterX, mainCircleCenterY);
+            
+            // Create a new flashing circle
+            createFlashingCircle();
         }
+    });
+}
 
-        mainCircle.style.top = `${posY}px`;
-        mainCircle.style.left = `${posX}px`;
-
-        checkCollisionAndRemove();
-
-        requestAnimationFrame(updateCirclePosition);
-    }
-
-    // Start updating the circle position
-    updateCirclePosition();
-
-    // Function to create flashing circles at random positions
-    function createFlashingCircle() {
-        if (flashingCircleCount < 5) {
-            const flashingCircle = document.createElement("div");
-            flashingCircle.classList.add("circleAnimation", "flashAnimation");
-
-            const randomX = Math.random() * window.innerWidth * 0.95;
-            const randomY = Math.random() * window.innerHeight * 0.95;
-
-            flashingCircle.style.top = `${randomY}px`;
-            flashingCircle.style.left = `${randomX}px`;
-
-            document.body.appendChild(flashingCircle);
-
-            flashingCircleCount++;
-        }
-    }
-
-    // Call the function to create a flashing circle every 3 seconds
-    setInterval(createFlashingCircle, 100);
-});
+ 
+     // Call the function to check for collisions every animation frame
+     function checkCollisions() {
+         checkCollisionWithFlashingCircles();
+         requestAnimationFrame(checkCollisions);
+     }
+ 
+     // Start checking for collisions
+     checkCollisions();
+ });
